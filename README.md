@@ -1,5 +1,9 @@
 # LQVM - Low Quality Virtual Machine
 
+Implementation of a simple virtual machine. I want to thank my dear friend
+[Alex Romanov](https://github.com/ajlekcahdp4) for coming up with the name brilliant name of this
+project.
+
 ## Requirements
 
 The following applications and libraries have to be installed:
