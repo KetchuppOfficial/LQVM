@@ -13,36 +13,68 @@ of every operation is the same as that of the operands if the opposite is not st
 
 ### get_your_ass_to_mars
 
-Assembly:
+#### Assembly
 
 `get_your_ass_to_mars rd, rs`
 
-`get_your_ass_to_mars rd, imm`
+#### Encoding
 
-Semantics:
+|         rs         |         rd         |   opcode   |
+| ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `00000001` |
 
-Move **rs**/**imm** to **rd**.
+#### Semantics
+
+Move **rs** to **rd**.
+
+### put_that_cookie_down_now
+
+#### Assembly
+
+`put_that_cookie_down_now rd, imm`
+
+#### Encoding
+
+|         imm        |         rd         |   opcode   |
+| ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `00000010` |
+
+#### Semantics
+
+Move sign-extended **imm** to **rd**.
 
 ## Cast operation
 
 ### i_eat_green_berets_for_breakfast
 
-Assembly:
+#### Assembly
 
 `i_eat_green_berets_for_breakfast rd, rs1`
 
-Semantics:
+#### Encoding
+
+|         rs         |         rd         |   opcode   |
+| ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `00000011` |
+
+#### Semantics
 
 Sign-extend value in **rs1** to the number of bits in **rd** and store the result in **rd**. The
 bit width of **rd** shall not be less than that of **rs1**.
 
 ### let_off_some_steam_bennett
 
-Assembly:
+#### Assembly
 
 `let_off_some_steam_bennett rd, rs1`
 
-Semantics:
+#### Encoding
+
+|         rs         |         rd         |   opcode   |
+| ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `00000100` |
+
+#### Semantics
 
 Truncate the value in **rs1** to the number of bits in **rd** and store the result in **rd**. The
 bit width of **rd** shall not be greater than that of **rs1**.
@@ -51,41 +83,65 @@ bit width of **rd** shall not be greater than that of **rs1**.
 
 ### give_you_a_lift
 
-Assembly:
+#### Assembly
 
 `give_you_a_lift rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00000101` |
+
+#### Semantics
 
 Add **rs1** and **rs2** and put the result into **rd**.
 
 ### you_ve_just_been_erased
 
-Assembly:
+#### Assembly
 
 `you_ve_just_been_erased rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00000110` |
+
+#### Semantics
 
 Subtract **rs2** from **rs1** ant put the result into **rd**.
 
 ### its_turbo_time
 
-Assembly:
+#### Assembly
 
 `its_turbo_time rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00000111` |
+
+#### Semantics
 
 Multiply **rs1** by **rs2** and put the result into **rd**.
 
 ### he_had_to_split
 
-Assembly:
+#### Assembly
 
 `he_had_to_split rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00001000` |
+
+#### Semantics
 
 Divide **rs1** by **rs2** and put the result into **rd**.
 
@@ -93,21 +149,33 @@ Divide **rs1** by **rs2** and put the result into **rd**.
 
 ### if_it_bleeds_we_can_kill_it
 
-Assembly:
+#### Assembly
 
 `if_it_bleeds_we_can_kill_it rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00001001` |
+
+#### Semantics
 
 Put 1 to **rd**, if **rs1** < **rs2**, 0 - otherwise
 
 ### you_are_not_you_you_are_me
 
-Assembly:
+#### Assembly
 
 `you_are_not_you_you_are_me rd, rs1, rs2`
 
-Semantics:
+#### Encoding
+
+|        rs2         |        rs1         |         rd         |   opcode   |
+| ------------------ | ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `----------------` | `00001010` |
+
+#### Semantics
 
 Put 1 to **rd**, if **rs1** == **rs2**, 0 - otherwise.
 
@@ -115,52 +183,85 @@ Put 1 to **rd**, if **rs1** == **rs2**, 0 - otherwise.
 
 ### come_with_me_if_you_want_to_live
 
-Assembly:
+#### Assembly
 
 `come_with_me_if_you_want_to_live rs, imm`
 
-Semantics:
+#### Encoding
+
+|         imm        |         rs         |   opcode   |
+| ------------------ | ------------------ | ---------- |
+| `----------------` | `----------------` | `00001011` |
+
+#### Semantics
 
 Transfer control to the instruction, shifted relative to the current one, by **imm** instructions if
 **rs** != 0.
 
 ### get_to_the_chopper
 
-Assembly:
+#### Assembly
 
 `get_to_the_chopper imm`
 
-Semantics:
+#### Encoding
+
+|         imm        |   opcode   |
+| ------------------ | ---------- |
+| `----------------` | `00001100` |
+
+#### Semantics
 
 Unconditionally transfer control to the instruction. shifted relative to the current one, by **imm**
 instructions.
 
-### ill_be_back @method (only static methods are supported for now)
+### ill_be_back
 
-Assembly:
+#### Assembly
 
-`ill_be_back @method`
+`ill_be_back method`
 
-Semantics:
+#### Encoding
 
-Call static method **@method**.
+|        method      |   opcode   |
+| ------------------ | ---------- |
+| `----------------` | `00001101` |
+
+#### Semantics
+
+Call static method with index **method** in the method table. The arguments are in the first N
+registers.
+
+Only static methods are supported for now.
 
 ### consider_that_a_divorce
 
-Assembly:
+#### Assembly
 
 `consider_that_a_divorce`
 
-Semantics:
+#### Encoding
+
+|   opcode   |
+| ---------- |
+| `00001110` |
+
+#### Semantics
 
 Return from a static method.
 
 ### you_ve_been_terminated
 
-Assembly:
+#### Assembly
 
 `you_ve_been_terminated`
 
-Semantics:
+#### Encoding
+
+|   opcode   |
+| ---------- |
+| `00001111` |
+
+#### Semantics
 
 Terminate the program execution
