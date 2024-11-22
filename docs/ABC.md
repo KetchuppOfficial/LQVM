@@ -2,266 +2,326 @@
 
 ## Common notes
 
-The bytecode is developed for a register-based VM. The machine works only with signed integer
-values. Two's complement is used for representing such integers. Each register can be accessed as
-8-, 16-, 32- or 64-bit register. The width is determined by the name: **b0**, **h1**, **s2** and
-**d3** are respectively 8-, 16-, 32- and 64-bit registers. Any operation taking 2 input registers or
-a register and an immediate requires them to be of the same bit width. The bit width of the result
-of every operation is the same as that of the operands if the opposite is not stated explicitly.
+The bytecode is developed for a register-based Lua-like virtual machine.
+
+All instructions occupy 32 bits and have an opcode in the low 6 bits.
+
+Instructions have the following fields:
+
+- **A**: 8 bits
+- **B**: 9 bits
+- **C**: 9 bits
+- **UIMM**: 18 bits (unsigned immediate)
+- **SIMM**: 18 bits (signed immediate)
+
+The following notation is used in pseudocode to describe instructions' semantics:
+
+- **R[X]** - register with index **X**
+
+    **X** may be **A**, **B** or **C**. If **X** is either **B** or **C**, then only low 8 bits are
+    considered.
+
+- **K[X]** - constant with index **X**
+
+    **X** may be only UIMM.
+
+- **RK[X]** - register or constant
+
+    **X** may be **B** or **C**.
+
+    If the most significant bit of **X** is 0, **RK[X]** == **R[X]**.
+
+    If the most significant bit of X is 1, **RK[X] == K[X[8:0]]**.
+
+- **PC** (program counter) - special value representing the index of instruction being executed.
 
 ## Data-flow operations
 
 ### get_your_ass_to_mars
 
-#### Assembly
+**Assembly:**
 
-`get_your_ass_to_mars rd, rs`
+`get_your_ass_to_mars A, B`
 
-#### Encoding
+**Encoding:**
 
-|         rs         |         rd         |   opcode   |
-| ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `00000001` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `000000000` | `---------` | `--------` | `000001` |
 
-#### Semantics
+**Semantics:**
 
-Move **rs** to **rd**.
+```text
+R[A] := R[B]
+PC++
+```
 
 ### put_that_cookie_down_now
 
-#### Assembly
+**Assembly:**
 
-`put_that_cookie_down_now rd, imm`
+`put_that_cookie_down_now A, imm`
 
-#### Encoding
+**Encoding:**
 
-|         imm        |         rd         |   opcode   |
-| ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `00000010` |
+|         UIMM         |     A      |  opcode  |
+| -------------------- | ---------- | -------- |
+| `------------------` | `--------` | `000010` |
 
-#### Semantics
+**Semantics:**
 
-Move sign-extended **imm** to **rd**.
-
-## Cast operation
-
-### i_eat_green_berets_for_breakfast
-
-#### Assembly
-
-`i_eat_green_berets_for_breakfast rd, rs1`
-
-#### Encoding
-
-|         rs         |         rd         |   opcode   |
-| ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `00000011` |
-
-#### Semantics
-
-Sign-extend value in **rs1** to the number of bits in **rd** and store the result in **rd**. The
-bit width of **rd** shall not be less than that of **rs1**.
-
-### let_off_some_steam_bennett
-
-#### Assembly
-
-`let_off_some_steam_bennett rd, rs1`
-
-#### Encoding
-
-|         rs         |         rd         |   opcode   |
-| ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `00000100` |
-
-#### Semantics
-
-Truncate the value in **rs1** to the number of bits in **rd** and store the result in **rd**. The
-bit width of **rd** shall not be greater than that of **rs1**.
+```text
+R[A] := K[UIMM]
+PC++
+```
 
 ## Arithmetic operations
 
 ### give_you_a_lift
 
-#### Assembly
+**Assembly:**
 
-`give_you_a_lift rd, rs1, rs2`
+`give_you_a_lift A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00000101` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `000011` |
 
-#### Semantics
+**Semantics:**
 
-Add **rs1** and **rs2** and put the result into **rd**.
+```text
+R[A] := RK[B] + RK[C]
+PC++
+```
 
 ### you_ve_just_been_erased
 
-#### Assembly
+**Assembly:**
 
-`you_ve_just_been_erased rd, rs1, rs2`
+`you_ve_just_been_erased A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00000110` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `000100` |
 
-#### Semantics
+**Semantics:**
 
-Subtract **rs2** from **rs1** ant put the result into **rd**.
+```text
+R[A] := RK[B] - RK[C]
+PC++
+```
 
-### its_turbo_time
+### it_s_turbo_time
 
-#### Assembly
+**Assembly:**
 
-`its_turbo_time rd, rs1, rs2`
+`it_s_turbo_time A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00000111` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `000101` |
 
-#### Semantics
+**Semantics:**
 
-Multiply **rs1** by **rs2** and put the result into **rd**.
+```text
+R[A] := RK[B] * RK[C]
+PC++
+```
 
 ### he_had_to_split
 
-#### Assembly
+**Assembly:**
 
-`he_had_to_split rd, rs1, rs2`
+`he_had_to_split A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00001000` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `000110` |
 
-#### Semantics
+**Semantics:**
 
-Divide **rs1** by **rs2** and put the result into **rd**.
+```text
+R[A] := RK[B] / RK[C]
+PC++
+```
 
-## Comparing instructions
+### let_off_some_steam_bennet
+
+**Assembly:**
+
+`let_off_some_steam_bennet A, B, C`
+
+**Encoding:**
+
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `000111` |
+
+**Semantics:**
+
+```text
+R[A] := RK[B] % RK[C]
+PC++
+```
+
+## Comparison instructions
 
 ### if_it_bleeds_we_can_kill_it
 
-#### Assembly
+**Assembly:**
 
-`if_it_bleeds_we_can_kill_it rd, rs1, rs2`
+`if_it_bleeds_we_can_kill_it A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00001001` |
+|      A      |      B      |     C      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `001000` |
 
-#### Semantics
+**Semantics:**
 
-Put 1 to **rd**, if **rs1** < **rs2**, 0 - otherwise
+```text
+R[A] := RK[B] < RK[C] ? 1 : 0
+PC++
+```
+
+### you_are_a_choir_boy_compared_to_me
+
+**Assembly:**
+
+`you_are_a_choir_boy_compared_to_me rd, rs1, rs2`
+
+**Encoding:**
+
+|      A      |      B      |     C      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `001001` |
+
+**Semantics:**
+
+```text
+R[A] := RK[B] <= RK[C] ? 1 : 0
+PC++
+```
 
 ### you_are_not_you_you_are_me
 
-#### Assembly
+**Assembly:**
 
-`you_are_not_you_you_are_me rd, rs1, rs2`
+`you_are_not_you_you_are_me A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        rs2         |        rs1         |         rd         |   opcode   |
-| ------------------ | ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `----------------` | `00001010` |
+|      A      |      B      |     C      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `001010` |
 
-#### Semantics
+**Semantics:**
 
-Put 1 to **rd**, if **rs1** == **rs2**, 0 - otherwise.
+```text
+R[A] := RK[B] == RK[C] ? 1 : 0
+PC++
+```
 
 ## Control transfer instructions
 
 ### come_with_me_if_you_want_to_live
 
-#### Assembly
+**Assembly:**
 
-`come_with_me_if_you_want_to_live rs, imm`
+`come_with_me_if_you_want_to_live A, imm`
 
-#### Encoding
+**Encoding:**
 
-|         imm        |         rs         |   opcode   |
-| ------------------ | ------------------ | ---------- |
-| `----------------` | `----------------` | `00001011` |
+|         SIMM         |     A      |  opcode  |
+| -------------------- | ---------- | -------- |
+| `------------------` | `--------` | `001011` |
 
-#### Semantics
+**Semantics:**
 
-Transfer control to the instruction, shifted relative to the current one, by **imm** instructions if
-**rs** != 0.
+```text
+PC += (A == 0) ? 1 : SIMM
+```
 
 ### get_to_the_chopper
 
-#### Assembly
+**Assembly:**
 
 `get_to_the_chopper imm`
 
-#### Encoding
+**Encoding:**
 
-|         imm        |   opcode   |
-| ------------------ | ---------- |
-| `----------------` | `00001100` |
+|         SIMM         |     A      |  opcode  |
+| -------------------- | ---------- | -------- |
+| `------------------` | `00000000` | `001100` |
 
-#### Semantics
+**Semantics:**
 
-Unconditionally transfer control to the instruction. shifted relative to the current one, by **imm**
-instructions.
+```text
+PC += SIMM
+```
 
-### ill_be_back
+### i_ll_be_back
 
-#### Assembly
+**Assembly:**
 
-`ill_be_back method`
+`i_ll_be_back A, B, C`
 
-#### Encoding
+**Encoding:**
 
-|        method      |   opcode   |
-| ------------------ | ---------- |
-| `----------------` | `00001101` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `---------` | `---------` | `--------` | `001101` |
 
-#### Semantics
+**Semantics:**
 
-Call static method with index **method** in the method table. The arguments are in the first N
-registers.
+```text
+if (B == 0)
+    R[A]()
+else
+    R[A](R[A + 1], ..., R[A + B])
+```
 
-Only static methods are supported for now.
+The reference to the function which is stored in **R[A]**. The number of return values is **C**.
 
 ### consider_that_a_divorce
 
-#### Assembly
+**Assembly:**
 
-`consider_that_a_divorce`
+`consider_that_a_divorce A, B`
 
-#### Encoding
+**Encoding:**
 
-|   opcode   |
-| ---------- |
-| `00001110` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `000000000` | `---------` | `--------` | `001110` |
 
-#### Semantics
+**Semantics:**
 
-Return from a static method.
+Return from a function.
+
+If **B > 0**, store the return values in **R(A), ..., R(A + B - 1)**.
 
 ### you_ve_been_terminated
 
-#### Assembly
+**Assembly:**
 
 `you_ve_been_terminated`
 
-#### Encoding
+**Encoding:**
 
-|   opcode   |
-| ---------- |
-| `00001111` |
+|      C      |      B      |     A      |  opcode  |
+| ----------- | ----------- | ---------- | -------- |
+| `000000000` | `000000000` | `00000000` | `111111` |
 
-#### Semantics
+**Semantics:**
 
-Terminate the program execution
+Terminate the program execution.
