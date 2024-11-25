@@ -31,7 +31,10 @@ auto get_A(BCInstr instr) noexcept { return get_bits_r<kALastBit, kAFirstBit, ui
 auto get_B(BCInstr instr) noexcept { return get_bits_r<kBLastBit, kBFirstBit, uint16_t>(instr); }
 auto get_C(BCInstr instr) noexcept { return get_bits_r<kCLastBit, kCFirstBit, uint16_t>(instr); }
 auto get_UIMM(BCInstr instr) noexcept { return get_bits<kIMMLastBit, kIMMFirstBit>(instr); }
-auto get_SIMM(BCInstr instr) noexcept { return to_signed(get_UIMM(instr)); }
+auto get_SIMM(BCInstr instr) noexcept
+{
+    return to_signed(sext<kIMMBitsLen, BCInstr>(get_UIMM(instr)));
+}
 
 } // unnamed namespace
 

@@ -93,6 +93,32 @@ constexpr auto to_signed(T num) noexcept { return static_cast<std::make_signed_t
 template<std::signed_integral T>
 constexpr auto to_unsigned(T num) noexcept { return static_cast<std::make_unsigned_t<T>>(num); }
 
+/*
+ * Sign extened first <from_bits> of input to kNBits<To>
+ *
+ *  15  13               5         0
+ *   0 1 0 0 1 0 1 1 1 0 1 0 0 1 1 0 -----> 0000101110100000
+ *       ^               ^
+ *       to             from
+ */
+template<std::size_t from_bits, std::unsigned_integral To, std::unsigned_integral From>
+constexpr To sext(From num) noexcept
+{
+    static_assert(from_bits > 0);
+    static_assert(from_bits <= kNBits<From>);
+    static_assert(sizeof(From) <= sizeof(To));
+
+    if constexpr (from_bits == kNBits<To>)
+        return num;
+    else if constexpr (from_bits == 8 || from_bits == 16 || from_bits == 32)
+        return static_cast<To>(to_signed(num));
+    else
+    {
+        auto sign_bit_mask = To{1} << from_bits - 1;
+        return (num ^ sign_bit_mask) - sign_bit_mask;
+    }
+}
+
 } // namespace lqvm
 
 #endif // INCLUDE_BITS_MANIPULATION

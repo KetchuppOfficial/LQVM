@@ -20,6 +20,16 @@ public:
         return create_AB<Opcodes::kGetYourAssToMars>(A, B);
     }
 
+    static constexpr BCInstr create_ComeWithMeIfYouWantToLive(uint8_t A, int32_t simm) noexcept
+    {
+        return create_SIMM<Opcodes::kComeWithMeIfYouWantToLive>(A, simm);
+    }
+
+    static constexpr BCInstr create_GetToTheChopper(int32_t simm) noexcept
+    {
+        return create_SIMM<Opcodes::kGetToTheChopper>(0, simm);
+    }
+
     static constexpr BCInstr create_YouVeBeenTerminated() noexcept
     {
         return Opcodes::kYouVeBeenTerminated;
@@ -56,18 +66,6 @@ public:
     DEFINE_ABC(IllBeBack)
 
     #undef DEFINE_ABC
-
-    #undef DEFINE_A_SIMM
-    #define DEFINE_A_SIMM(OP)                                               \
-    static constexpr BCInstr create_##OP(uint8_t A, int32_t simm) noexcept \
-    {                                                                      \
-        return create_SIMM<Opcodes::k##OP>(A, simm);                       \
-    }
-
-    DEFINE_A_SIMM(ComeWithMeIfYouWantToLive)
-    DEFINE_A_SIMM(GetToTheChopper)
-
-    #undef DEFINE_A_SIMM
 
 private:
 

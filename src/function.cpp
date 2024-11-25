@@ -19,10 +19,21 @@ void Function::add_GetYourAssToMars(uint8_t A, uint16_t B)
     code_.push_back(BytecodeBuilder::create_GetYourAssToMars(A, get_bits<kBCBitsLen - 1, 0>(B)));
 }
 
+void Function::add_ComeWithMeIfYouWantToLive(uint8_t A, int32_t simm)
+{
+    code_.push_back(BytecodeBuilder::create_ComeWithMeIfYouWantToLive(A, simm));
+}
+
+void Function::add_GetToTheChopper(int32_t simm)
+{
+    code_.push_back(BytecodeBuilder::create_GetToTheChopper(simm));
+}
+
 void Function::add_YouVeBeenTerminated()
 {
     code_.push_back(BytecodeBuilder::create_YouVeBeenTerminated());
 }
+
 
 #undef DEFINE_ADD_ABC
 #define DEFINE_ADD_ABC(OP)                                  \
@@ -48,31 +59,17 @@ DEFINE_ADD_ABC(IllBeBack)
 #undef DEFINE_ADD_ABC
 
 #undef DEFINE_ADD_A_UIMM
-#define DEFINE_ADD_A_UIMM(OP)                            \
-void Function::add_##OP(uint8_t A, uint32_t B)           \
-{                                                        \
-    code_.push_back(BytecodeBuilder::create_##OP(A, B)); \
+#define DEFINE_ADD_A_UIMM(OP)                               \
+void Function::add_##OP(uint8_t A, uint32_t uimm)           \
+{                                                           \
+    code_.push_back(BytecodeBuilder::create_##OP(A, uimm)); \
 }
 
-void Function ::add_PutThatCookieDownNow(uint8_t A, uint32_t B) {
-  code_.push_back(BytecodeBuilder ::create_PutThatCookieDownNow(A, B));
-}
+DEFINE_ADD_A_UIMM(PutThatCookieDownNow)
 DEFINE_ADD_A_UIMM(ConsiderThatADivorce)
 DEFINE_ADD_A_UIMM(TalkToTheHand)
 
 #undef DEFINE_ADD_A_UIMM
-
-#undef DEFINE_ADD_A_SIMM
-#define DEFINE_ADD_A_SIMM(OP)                               \
-void Function::add_##OP(uint8_t A, int32_t simm)            \
-{                                                           \
-    code_.push_back(BytecodeBuilder::create_##OP(A, simm)); \
-}
-
-DEFINE_ADD_A_SIMM(ComeWithMeIfYouWantToLive)
-DEFINE_ADD_A_SIMM(GetToTheChopper)
-
-#undef DEFINE_ADD_A_SIMM
 
 void Function::check_BC(uint16_t BC)
 {

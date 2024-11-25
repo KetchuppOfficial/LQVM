@@ -79,6 +79,8 @@ public:
     void add_callee(const Function *callee) { callees_.push_back(callee); }
 
     void add_GetYourAssToMars(uint8_t A, uint16_t B);
+    void add_ComeWithMeIfYouWantToLive(uint8_t A, int32_t simm);
+    void add_GetToTheChopper(int32_t simm);
     void add_YouVeBeenTerminated();
 
     #undef DECLARE_ADD_ABC
@@ -97,21 +99,13 @@ public:
     #undef DECLARE_ADD_ABC
 
     #undef DECLARE_ADD_A_UIMM
-    #define DECLARE_ADD_A_UIMM(OP) void add_##OP(uint8_t A, uint32_t simm);
+    #define DECLARE_ADD_A_UIMM(OP) void add_##OP(uint8_t A, uint32_t uimm);
 
     DECLARE_ADD_A_UIMM(PutThatCookieDownNow)
     DECLARE_ADD_A_UIMM(ConsiderThatADivorce)
     DECLARE_ADD_A_UIMM(TalkToTheHand)
 
     #undef DECLARE_ADD_A_UIMM
-
-    #undef DECLARE_ADD_A_SIMM
-    #define DECLARE_ADD_A_SIMM(OP) void add_##OP(uint8_t, int32_t simm);
-
-    DECLARE_ADD_A_SIMM(ComeWithMeIfYouWantToLive)
-    DECLARE_ADD_A_SIMM(GetToTheChopper)
-
-    #undef DECLARE_ADD_A_SIMM
 
 private:
 
