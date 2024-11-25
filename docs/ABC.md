@@ -298,18 +298,18 @@ at the top of the caller's frame just before the start of the callee's frame.
 
 **Assembly:**
 
-`consider_that_a_divorce A`
+`consider_that_a_divorce A, UIMM`
 
 **Encoding:**
 
-|      C      |      B      |     A      |  opcode  |
-| ----------- | ----------- | ---------- | -------- |
-| `000000000` | `---------` | `--------` | `001110` |
+|         UIMM         |     A      |  opcode  |
+| -------------------- | ---------- | -------- |
+| `------------------` | `--------` | `001110` |
 
 **Semantics:**
 
-If **R[B] != 1**, return the value stored in **R[A]**. Otherwise, return from the function without
-storing the return value.
+If **R[UIMM] != 1**, return the value stored in **R[A]**. Otherwise, return from the function
+without storing the return value.
 
 ### you_ve_been_terminated
 
@@ -321,8 +321,26 @@ storing the return value.
 
 |      C      |      B      |     A      |  opcode  |
 | ----------- | ----------- | ---------- | -------- |
-| `000000000` | `000000000` | `00000000` | `111111` |
+| `000000000` | `000000000` | `00000000` | `001111` |
 
 **Semantics:**
 
 Terminate the program execution.
+
+## Miscellaneous
+
+### talk_to_the_hand
+
+**Assembly:**
+
+`talk_to_the_hand A, UIMM`
+
+**Encoding:**
+
+|         UIMM         |     A      |  opcode  |
+| -------------------- | ---------- | -------- |
+| `------------------` | `--------` | `010000` |
+
+**Semantics:**
+
+Print **R[A], ..., R[A + UIMM]** on standard output.
