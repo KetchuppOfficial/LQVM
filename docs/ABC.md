@@ -248,7 +248,7 @@ PC++
 **Semantics:**
 
 ```text
-PC += (A == 0) ? 1 : SIMM
+PC += (R[A] == 0) ? 1 : SIMM
 ```
 
 ### get_to_the_chopper
@@ -285,18 +285,20 @@ PC += SIMM
 
 ```text
 if (B == 0)
-    R[A]()
+    callee[A]()
 else
-    R[A](R[A + 1], ..., R[A + B])
+    callee[A](R[B], ..., R[B + C - 1])
 ```
 
-The reference to the function which is stored in **R[A]**. The number of return values is **C**.
+On function call a new stack frame is created. It's first registers are the arguments of the call.
+If the function returns a value, a slot in the value stack shall be reserved for storing the value
+at the top of the caller's frame just before the start of the callee's frame.
 
 ### consider_that_a_divorce
 
 **Assembly:**
 
-`consider_that_a_divorce A, B`
+`consider_that_a_divorce A`
 
 **Encoding:**
 
@@ -306,9 +308,8 @@ The reference to the function which is stored in **R[A]**. The number of return 
 
 **Semantics:**
 
-Return from a function.
-
-If **B > 0**, store the return values in **R(A), ..., R(A + B - 1)**.
+If **R[B] != 1**, return the value stored in **R[A]**. Otherwise, return from the function without
+storing the return value.
 
 ### you_ve_been_terminated
 
