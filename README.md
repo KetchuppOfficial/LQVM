@@ -37,7 +37,6 @@ cmake --build build [--target <tgt>]
 
 ```bash
 ./build/lqvm --help
-
 # LQVM: Low Quality Virtual Machine
 # Usage: ./build/lqvm [OPTIONS] number
 #
@@ -46,6 +45,6 @@ cmake --build build [--target <tgt>]
 #
 # Options:
 #   -h,--help                   Print this help message and exit
-#   --program TEXT:"fibonacci-loop"/"fibonacci-recursion"/"factorial" REQUIRED
+#   --program TEXT:{fibonacci-loop,fibonacci-recursion,factorial} REQUIRED
 #                               the program to run
 ```

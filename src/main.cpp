@@ -6,6 +6,7 @@
 #include <fmt/base.h>
 #include <utility>
 
+#include "CLI/CLI.hpp"
 #include "bytecode/bytecode.hpp"
 #include "lqvm.hpp"
 
@@ -220,19 +221,10 @@ int main(int argc, char **argv) try
     app.add_option("number", n, "the input number")
         ->required();
 
-    auto validator = CLI::Validator([](const std::string &input)
-    {
-        if (input == "fibonacci-loop" || input == "fibonacci-recursion" || input == "factorial")
-            return "";
-        throw CLI::ValidationError{std::format("unrecognized program \"{}\"", input)};
-    },
-    "\"fibonacci-loop\"/\"fibonacci-recursion\"/\"factorial\"",
-    "program validator");
-
     std::string program;
     app.add_option("--program", program, "the program to run")
         ->required()
-        ->check(validator);
+        ->check(CLI::IsMember({"fibonacci-loop", "fibonacci-recursion", "factorial"}));
 
     CLI11_PARSE(app, argc, argv);
 
