@@ -3,8 +3,11 @@
 
 #include <cstddef>
 #include <concepts>
+#include <cstdlib>
 #include <type_traits>
 #include <vector>
+
+#include <fmt/base.h>
 
 #include "utils/common.hpp"
 
@@ -42,9 +45,31 @@ private:
         std::size_t pc = 0;
     };
 
+    class ValueStack final
+    {
+    public:
+
+        explicit ValueStack(std::size_t size) : value_stack_(size) {}
+
+        template<typename Self>
+        auto &&operator[](this Self &&self, std::size_t i) noexcept
+        {
+            if (i >= self.value_stack_.size()) [[unlikely]]
+            {
+                fmt::println(stderr, "stack overflow");
+                std::exit(EXIT_FAILURE);
+            }
+            return self.value_stack_[i];
+        }
+
+    private:
+
+        std::vector<Number> value_stack_;
+    };
+
     Bytecode bytecode_;
 
-    std::vector<Number> value_stack_;
+    ValueStack value_stack_;
     std::vector<CallInfo> call_stack_;
 };
 

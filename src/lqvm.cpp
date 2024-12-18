@@ -2,8 +2,7 @@
 #include <concepts>
 #include <type_traits>
 #include <functional>
-#include <stdexcept>
-#include <format>
+#include <cstdlib>
 
 #include "fmt/base.h"
 
@@ -171,7 +170,8 @@ entry:
             }
 
             default: [[unlikely]]
-                throw std::runtime_error{std::format("unknown instruction {:#x}", instr)};
+                fmt::println(stderr, "unknown instruction {:#x}", instr);
+                std::exit(EXIT_FAILURE);
         }
     }
 }
